@@ -1,0 +1,62 @@
+# Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+wso2::service_name: wso2es
+wso2::hostname: marathon-lb.marathon.mesos
+wso2::mgt_hostname: marathon-lb.marathon.mesos
+
+# Clustering
+wso2::clustering:
+  enabled: true
+  membership_scheme: mesos
+  mesos:
+    marathon_applications: wso2es-publisher,wso2es-store
+#    enable_marathon_basic_auth: true
+#    marathon_username: username
+#    marathon_password: password
+
+wso2::ports:
+  proxyPort:
+    http: 10082
+    https: 10083
+
+wso2::service_provider:
+  store:
+    issuer: store
+    acs: https://marathon-lb.marathon.mesos:10085/store/acs
+  social:
+    issuer: social
+    acs: https://marathon-lb.marathon.mesos:10085/social/acs
+  publisher:
+    issuer: publisher
+    acs: https://marathon-lb.marathon.mesos:10083/publisher/acs
+
+wso2::identity_provider:
+  store:
+    issuer: store
+    identity_provider_url: https://marathon-lb.marathon.mesos:10085/samlsso
+  publisher:
+    issuer: publisher
+    identity_provider_url: https://marathon-lb.marathon.mesos:10085/samlsso
+
+wso2::social_app_url: https://marathon-lb.marathon.mesos:10085/social
+
+# SSO Configuration
+wso2::sso_authentication:
+  enabled: false
+  login_page: /carbon/admin/login.jsp
+  service_provider_id: wso2es-pub
+  sso_service_url: https://marathon-lb.marathon.mesos:10113/samlsso
+  consumer_service_url: https://marathon-lb.marathon.mesos:10083/acs
